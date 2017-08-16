@@ -239,7 +239,7 @@ assert donoEhColaborador{
 pred show{}
 run show for 10
 
--------------------------------------------------------EXECUCAO ASSERTS----------------------------------------------------
+--------------------------------------------------------EXECUCAO ASSERTS-------------------------------------------------------
 check umGrammy
 check tamanhoIndicadosCantorBanda
 check cantorBandaConcorrendoTemAlbumConcorrendo
