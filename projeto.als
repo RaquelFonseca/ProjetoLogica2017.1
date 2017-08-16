@@ -26,6 +26,11 @@ pred tamanhoCantorBanda[g:Grammy] {
 	#listaCantoresBandas[g] >= 4 && #listaCantoresBandas[g]<= 8
 }
 
+-- Cantor concorrendo tem album concorrendo.
+pred cantorConcorrendoComAlbumConcorrendo[g:Grammy, c:Cantor] {
+	cantorBandaIndicado[c,g]  => algumAlbumConcorrendo[c, g]
+}
+
 -- Indicados a melhor album tem entre 4 e 8.
 pred tamanhoAlbum[g:Grammy] {
 	#listaAlbuns[g] >= 4 && #listaAlbuns[g] <= 8
@@ -36,9 +41,19 @@ pred tamanhoCancao[g:Grammy] {
 	#listaCancoes[g] >= 4 && #listaCancoes[g] <= 8
 }
 
+-- Metade melhores cancoes em melhores albuns. 
+pred metadeCancoesEmAlbunsIndicados[g:Grammy] {
+	melhoresCancoesEmMelhoresAlbuns[g] >=  metadeMelhoresCancoes[g]
+}
+
 -- Indicados a melhor colaboracao tem entre 4 e 8.
 pred tamanhoColaboracao[g:Grammy] {
 	#listaColaboracoes[g] >= 4 && #listaColaboracoes[g] <= 8
+}
+
+-- Concorrendo a colaboracao tem varios colaboradores.
+pred colaboracaoConcorrendoTemVariosColaboradores[g:Grammy, c:Cancao] {
+	colaboracaoIndicada[c,g] => variosColaboradores[c]
 }
 
 -- Cantor/Banda passada esta concorrendo ao grammy passado.
@@ -134,7 +149,7 @@ fact grammy{
 -- Todo cantor/Banda concorrente ao melhor cantor/banda tem um album concorrendo a melhor album.
 fact indicadosCantorBanda {
 	all g:Grammy | tamanhoCantorBanda[g]
-	all g:Grammy, c:Cantor | cantorBandaIndicado[c,g]  => algumAlbumConcorrendo[c, g]
+	all g:Grammy, c:Cantor | cantorConcorrendoComAlbumConcorrendo[g,c]
 }
 
 -- Indicacoes com 4 a 8 indicados.
@@ -147,14 +162,14 @@ fact indicadosAlbum {
 -- que estao presentes em algum album indicado na categoria melhor album.
 fact indicadosCancoes {
 	all g:Grammy | tamanhoCancao[g]
-	all g:Grammy | melhoresCancoesEmMelhoresAlbuns[g] >=  metadeMelhoresCancoes[g]
+	all g:Grammy | metadeCancoesEmAlbunsIndicados[g]
 }
 
 -- Indicacoes com 4 a 8 indicados.
 -- Toda cancao concorrendo a melhor colaboracao tem mais que um colaborador.
 fact indicadosColaboracoes {
 	all g:Grammy | tamanhoColaboracao[g]
-	all g:Grammy, c:Cancao | colaboracaoIndicada[c,g] => variosColaboradores[c]
+	all g:Grammy, c:Cancao | colaboracaoConcorrendoTemVariosColaboradores[g,c]
 }
 
 -- Todo album pertence a apenas um artista.
@@ -237,7 +252,7 @@ assert donoEhColaborador{
 
 -------------------------------------------------------------EXECUCAO----------------------------------------------------------
 pred show{}
-run show for 10
+--run show for 10
 
 --------------------------------------------------------EXECUCAO ASSERTS-------------------------------------------------------
 check umGrammy
